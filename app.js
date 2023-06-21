@@ -1,16 +1,15 @@
 /* eslint-disable no-console */
-// process.env.TZ = "UTC";
+
 const shopSchedule = require("./shop_schedule.json");
 
+const currentTime = new Date("2023-06-24T19:55:00");
 const isShopOpen = (day) => {
-  const currentTime = new Date("2023-06-23T14:55:00");
   const currentDay = currentTime.toLocaleString("en-US", {
     weekday: "short",
     hour12: true,
     hour: "numeric",
     minute: "numeric",
   });
-  console.log(currentDay);
 
   if (currentDay !== day) {
     return false;
@@ -33,18 +32,67 @@ const isShopOpen = (day) => {
 };
 
 const getShopStatus = () => {
-  const currentTime = new Date("2023-06-23T14:55:00");
-  // console.log("---------", currentTime);
   const currentDay = currentTime.toLocaleString("en-US", {
     weekday: "short",
     hour12: true,
     hour: "numeric",
     minute: "numeric",
   });
-  console.log(currentDay);
+
   const isOpen = isShopOpen(currentDay);
 
   return isOpen ? "Open!" : "Closed!";
 };
 
 console.log("Shop Status:", getShopStatus());
+
+// const shopSchedule = require("./shop_schedule.json");
+// // "2023-06-22T19:55:00"
+// const currentTime = new Date("2023-06-22T19:55:00");
+
+// const isShopOpen = () => {
+//   const currentDay = currentTime.toLocaleString("en-US", {
+//     weekday: "short",
+//     hour12: true,
+//     hour: "numeric",
+//     minute: "numeric",
+//   });
+//   console.log(currentDay);
+
+//   // if (currentDay !== day) {
+//   //   console.log("Current Day is not same");
+//   //   return false;
+//   // }
+
+//   const openTime = new Date(currentTime);
+//   const closeTime = new Date(currentTime);
+
+//   shopSchedule.forEach((entry) => {
+//     const day1 = currentTime.toDateString().split(" ")[0];
+//     if (entry.day === day1) {
+//       const [openHour, openMinutes] = entry.open.split(":");
+//       const [closeHour, closeMinutes] = entry.close.split(":");
+//       console.log(openHour, closeHour);
+//       openTime.setHours(Number(openHour), Number(openMinutes.split(" ")[0]));
+//       closeTime.setHours(Number(closeHour), Number(closeMinutes.split(" ")[0]));
+//     }
+//   });
+
+//   console.log(openTime, closeTime);
+//   return currentTime >= openTime && currentTime <= closeTime;
+// };
+
+// const getShopStatus = () => {
+//   const currentDay = currentTime.toLocaleString("en-US", {
+//     weekday: "short",
+//     hour12: true,
+//     hour: "numeric",
+//     minute: "numeric",
+//   });
+//   console.log(currentDay, "0---------------------");
+//   const isOpen = isShopOpen(currentDay);
+
+//   return isOpen ? "Open!" : "Closed!";
+// };
+
+// console.log("Shop Status:", getShopStatus());

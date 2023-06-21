@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-process.env.TZ = "UTC";
+// process.env.TZ = "UTC";
+// "2023-06-23T14:55:00"
 const shopSchedule = require("./shop_schedule.json");
 
 const isShopOpen = (day) => {
-  const currentTime = new Date("2023-06-23T14:55:00");
+  const currentTime = new Date();
   const currentDay = currentTime.toLocaleString("en-US", {
     weekday: "short",
     hour12: true,
@@ -33,7 +34,7 @@ const isShopOpen = (day) => {
 };
 
 const getShopStatus = () => {
-  const currentTime = new Date("2023-06-23T14:55:00");
+  const currentTime = new Date();
   // console.log("---------", currentTime);
   const currentDay = currentTime.toLocaleString("en-US", {
     weekday: "short",

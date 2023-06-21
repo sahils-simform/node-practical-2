@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-// process.env.TZ = "UTC";
+process.env.TZ = "UTC";
 const shopSchedule = require("./shop_schedule.json");
 
 const isShopOpen = (day) => {

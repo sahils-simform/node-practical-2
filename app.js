@@ -22,7 +22,7 @@ const SHOP_SCHEDULE = [
   },
 ];
 
-const isShopOpen = () => {
+function isShopOpen() {
   const now = new Date();
   const currentDay = now.toLocaleString("en-US", { weekday: "short" });
   const currentTime = now.getTime();
@@ -33,10 +33,17 @@ const isShopOpen = () => {
     const timeUntilOpen = Math.ceil(
       (nextOpenTime - currentTime) / (1000 * 60 * 60)
     );
-    return `Closed. The shop will be open after ${timeUntilOpen} Hrs`;
+    if (timeUntilOpen < 24) {
+      return `Closed. The shop will be open after ${timeUntilOpen} Hrs`;
+    }
+    const daysUntilOpen = Math.ceil(timeUntilOpen / 24);
+    const hoursUntilOpen = timeUntilOpen % 24;
+    return `Closed. The shop will be open after ${daysUntilOpen} ${
+      daysUntilOpen === 1 ? "Day" : "Days"
+    } and ${hoursUntilOpen} Hrs`;
   }
 
-  const getTimeFromString = (timeString) => {
+  function getTimeFromString(timeString) {
     const [hours, minutes, meridian] = timeString.split(/:| /);
     let hours24 = Number(hours);
     if (meridian === "PM" && hours24 < 12) {
@@ -47,7 +54,7 @@ const isShopOpen = () => {
     const date = new Date();
     date.setHours(hours24, Number(minutes), 0, 0);
     return date.getTime();
-  };
+  }
   const shopOpenTime = getTimeFromString(shopSchedule.open);
   const shopCloseTime = getTimeFromString(shopSchedule.close);
 
@@ -61,22 +68,32 @@ const isShopOpen = () => {
   const timeUntilOpen = Math.ceil(
     (nextOpenTime - currentTime) / (1000 * 60 * 60)
   );
-  return `Closed. The shop will be open after ${timeUntilOpen} Hrs`;
-};
+  if (timeUntilOpen < 24) {
+    return `Shop is Currently Closed. and it will be open after ${timeUntilOpen} Hrs`;
+  }
+  const daysUntilOpen = Math.ceil(timeUntilOpen / 24);
+  const hoursUntilOpen = timeUntilOpen % 24;
+  return `Shop is Currently Closed. and it will be open after ${daysUntilOpen} ${
+    daysUntilOpen === 1 ? "Day" : "Days"
+  } and ${hoursUntilOpen} Hrs`;
+}
 
-const getNextOpenTime = (currentDay) => {
+function getNextOpenTime(currentDay) {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const currentDayIndex = daysOfWeek.indexOf(currentDay);
-  const nextDayIndex = (currentDayIndex + 1) % 7;
+  let nextDayIndex = (currentDayIndex + 1) % 7;
 
-  const nextOpenTime = getTimeFromString(SHOP_SCHEDULE[nextDayIndex].open);
-  const nextOpenDateTime = new Date();
-  nextOpenDateTime.setDate(
-    nextOpenDateTime.getDate() + ((nextDayIndex - currentDayIndex + 7) % 7)
+  while (
+    !SHOP_SCHEDULE.find((entry) => entry.day === daysOfWeek[nextDayIndex])
+  ) {
+    nextDayIndex = (nextDayIndex + 1) % 7;
+  }
+
+  const nextOpenDay = SHOP_SCHEDULE.find(
+    (entry) => entry.day === daysOfWeek[nextDayIndex]
   );
-  nextOpenDateTime.setHours(0, 0, 0, 0);
-  nextOpenDateTime.setTime(nextOpenDateTime.getTime() + nextOpenTime);
+  const nextOpenTime = getTimeFromString(nextOpenDay.open);
+  return nextOpenTime;
+}
 
-  return nextOpenDateTime.getTime();
-};
 console.log("Shop Status:", isShopOpen());

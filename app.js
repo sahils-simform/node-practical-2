@@ -1,51 +1,82 @@
 /* eslint-disable no-console */
-// process.env.TZ = "UTC";
-// "2023-06-23T14:55:00"
-const shopSchedule = require("./shop_schedule.json");
+const SHOP_SCHEDULE = [
+  {
+    day: "Mon",
+    open: "07:00 AM",
+    close: "07:00 PM",
+  },
+  {
+    day: "Tue",
+    open: "07:00 AM",
+    close: "07:00 PM",
+  },
+  {
+    day: "Thu",
+    open: "07:00 AM",
+    close: "07:00 PM",
+  },
+  {
+    day: "Fri",
+    open: "07:00 AM",
+    close: "07:00 PM",
+  },
+];
 
-const isShopOpen = (day) => {
-  const currentTime = new Date();
-  const currentDay = currentTime.toLocaleString("en-US", {
-    weekday: "short",
-    hour12: true,
-    hour: "numeric",
-    minute: "numeric",
-  });
-  console.log(currentDay);
+const isShopOpen = () => {
+  const now = new Date();
+  const currentDay = now.toLocaleString("en-US", { weekday: "short" });
+  const currentTime = now.getTime();
 
-  if (currentDay !== day) {
-    return false;
+  const shopSchedule = SHOP_SCHEDULE.find((entry) => entry.day === currentDay);
+  if (!shopSchedule) {
+    const nextOpenTime = getNextOpenTime(currentDay);
+    const timeUntilOpen = Math.ceil(
+      (nextOpenTime - currentTime) / (1000 * 60 * 60)
+    );
+    return `Closed. The shop will be open after ${timeUntilOpen} Hrs`;
   }
 
-  const openTime = new Date();
-  const closeTime = new Date();
-
-  shopSchedule.forEach((entry) => {
-    if (entry.day === day) {
-      const [openHour, openMinutes] = entry.open.split(":");
-      const [closeHour, closeMinutes] = entry.close.split(":");
-
-      openTime.setHours(Number(openHour), Number(openMinutes), 0);
-      closeTime.setHours(Number(closeHour), Number(closeMinutes), 0);
+  const getTimeFromString = (timeString) => {
+    const [hours, minutes, meridian] = timeString.split(/:| /);
+    let hours24 = Number(hours);
+    if (meridian === "PM" && hours24 < 12) {
+      hours24 += 12;
+    } else if (meridian === "AM" && hours24 === 12) {
+      hours24 = 0;
     }
-  });
+    const date = new Date();
+    date.setHours(hours24, Number(minutes), 0, 0);
+    return date.getTime();
+  };
+  const shopOpenTime = getTimeFromString(shopSchedule.open);
+  const shopCloseTime = getTimeFromString(shopSchedule.close);
 
-  return currentTime >= openTime && currentTime <= closeTime;
+  if (currentTime >= shopOpenTime && currentTime <= shopCloseTime) {
+    const timeUntilClose = Math.ceil(
+      (shopCloseTime - currentTime) / (1000 * 60 * 60)
+    );
+    return `Open. The shop will be closed within ${timeUntilClose} Hrs`;
+  }
+  const nextOpenTime = getNextOpenTime(currentDay);
+  const timeUntilOpen = Math.ceil(
+    (nextOpenTime - currentTime) / (1000 * 60 * 60)
+  );
+  return `Closed. The shop will be open after ${timeUntilOpen} Hrs`;
 };
 
-const getShopStatus = () => {
-  const currentTime = new Date();
-  // console.log("---------", currentTime);
-  const currentDay = currentTime.toLocaleString("en-US", {
-    weekday: "short",
-    hour12: true,
-    hour: "numeric",
-    minute: "numeric",
-  });
-  console.log(currentDay);
-  const isOpen = isShopOpen(currentDay);
+const getNextOpenTime = (currentDay) => {
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const currentDayIndex = daysOfWeek.indexOf(currentDay);
+  const nextDayIndex = (currentDayIndex + 1) % 7;
 
-  return isOpen ? "Open!" : "Closed!";
+  const nextOpenTime = getTimeFromString(SHOP_SCHEDULE[nextDayIndex].open);
+  const nextOpenDateTime = new Date();
+  nextOpenDateTime.setDate(
+    nextOpenDateTime.getDate() + ((nextDayIndex - currentDayIndex + 7) % 7)
+  );
+  nextOpenDateTime.setHours(0, 0, 0, 0);
+  nextOpenDateTime.setTime(nextOpenDateTime.getTime() + nextOpenTime);
+
+  return nextOpenDateTime.getTime();
 };
-
-console.log("Shop Status:", getShopStatus());
+console.log("Shop Status:", isShopOpen());

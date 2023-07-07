@@ -23,11 +23,9 @@ const schedule = [
 ];
 
 const isShopOpen = () => {
-  const now = new Date("2023-06-24T13:00");
-  console.log(now, "------------------");
+  const now = new Date();
   const currentDay = now.toLocaleString("en-US", { weekday: "short" });
   const currentTime = now.getTime();
-  console.log(currentTime, "+++++++");
   const shopSchedule = schedule.find((entry) => entry.day === currentDay);
   if (!shopSchedule) {
     return "Closed";
@@ -41,8 +39,7 @@ const isShopOpen = () => {
     } else if (meridian === "AM" && hours24 === 12) {
       hours24 = 0;
     }
-    const date = new Date("2023-06-24T13:00");
-    console.log(date, "**********");
+    const date = new Date();
     date.setHours(hours24, Number(minutes), 0, 0);
     return date.getTime();
   };
@@ -56,93 +53,3 @@ const isShopOpen = () => {
 };
 
 console.log("Shop Status:", isShopOpen());
-
-// const shopSchedule = require("./shop_schedule.json");
-
-// const currentTime = new Date("2023-06-24T19:55:00");
-// const isShopOpen = (day) => {
-//   const currentDay = currentTime.toLocaleString("en-US", {
-//     weekday: "short",
-//     hour12: true,
-//     hour: "numeric",
-//     minute: "numeric",
-//   });
-
-//   if (currentDay !== day) {
-//     return false;
-//   }
-
-//   const openTime = new Date();
-//   const closeTime = new Date();
-
-//   shopSchedule.forEach((entry) => {
-//     if (entry.day === day) {
-//       const [openHour, openMinutes] = entry.open.split(":");
-//       const [closeHour, closeMinutes] = entry.close.split(":");
-
-//       openTime.setHours(Number(openHour), Number(openMinutes), 0);
-//       closeTime.setHours(Number(closeHour), Number(closeMinutes), 0);
-//     }
-//   });const shopSchedule = require("./shop_schedule.json");
-
-// const currentTime = new Date("2023-06-24T19:55:00");
-// const isShopOpen = (day) => {
-//   const currentDay = currentTime.toLocaleString("en-US", {
-//     weekday: "short",
-//     hour12: true,
-//     hour: "numeric",
-//     minute: "numeric",
-//   });
-
-//   if (currentDay !== day) {
-//     return false;
-//   }
-
-//   const openTime = new Date();
-//   const closeTime = new Date();
-
-//   shopSchedule.forEach((entry) => {
-//     if (entry.day === day) {
-//       const [openHour, openMinutes] = entry.open.split(":");
-//       const [closeHour, closeMinutes] = entry.close.split(":");
-
-//       openTime.setHours(Number(openHour), Number(openMinutes), 0);
-//       closeTime.setHours(Number(closeHour), Number(closeMinutes), 0);
-//     }
-//   });
-
-//   return currentTime >= openTime && currentTime <= closeTime;
-// };
-
-// const getShopStatus = () => {
-//   const currentDay = currentTime.toLocaleString("en-US", {
-//     weekday: "short",
-//     hour12: true,
-//     hour: "numeric",
-//     minute: "numeric",
-//   });
-
-//   const isOpen = isShopOpen(currentDay);
-
-//   return isOpen ? "Open!" : "Closed!";
-// };
-
-// console.log("Shop Status:", getShopStatus());
-
-//   return currentTime >= openTime && currentTime <= closeTime;
-// };
-
-// const getShopStatus = () => {
-//   const currentDay = currentTime.toLocaleString("en-US", {
-//     weekday: "short",
-//     hour12: true,
-//     hour: "numeric",
-//     minute: "numeric",
-//   });
-
-//   const isOpen = isShopOpen(currentDay);
-
-//   return isOpen ? "Open!" : "Closed!";
-// };
-
-// console.log("Shop Status:", getShopStatus());

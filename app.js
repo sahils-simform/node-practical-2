@@ -1,26 +1,5 @@
 /* eslint-disable no-console */
-const SHOP_SCHEDULE = [
-  {
-    day: "Mon",
-    open: "07:00 AM",
-    close: "07:00 PM",
-  },
-  {
-    day: "Tue",
-    open: "07:00 AM",
-    close: "07:00 PM",
-  },
-  {
-    day: "Thu",
-    open: "07:00 AM",
-    close: "07:00 PM",
-  },
-  {
-    day: "Fri",
-    open: "07:00 AM",
-    close: "07:00 PM",
-  },
-];
+const schedule = require("./shop_schedule.json");
 
 const getTimeFromString = (timeString) => {
   const [hours, minutes, meridian] = timeString.split(/:| /);
@@ -40,7 +19,7 @@ const getNextOpenTime = (currentDay) => {
   const currentDayIndex = daysOfWeek.indexOf(currentDay);
   const nextDayIndex = (currentDayIndex + 1) % 7;
 
-  const nextOpenTime = getTimeFromString(SHOP_SCHEDULE[nextDayIndex].open);
+  const nextOpenTime = getTimeFromString(schedule[nextDayIndex].open);
   const nextOpenDateTime = new Date();
   nextOpenDateTime.setDate(
     nextOpenDateTime.getDate() + ((nextDayIndex - currentDayIndex + 7) % 7)
@@ -56,7 +35,7 @@ const isShopOpen = () => {
   const currentDay = now.toLocaleString("en-US", { weekday: "short" });
   const currentTime = now.getTime();
 
-  const shopSchedule = SHOP_SCHEDULE.find((entry) => entry.day === currentDay);
+  const shopSchedule = schedule.find((entry) => entry.day === currentDay);
   if (!shopSchedule) {
     const nextOpenTime = getNextOpenTime(currentDay);
     const timeUntilOpen = Math.ceil(
